@@ -2,7 +2,7 @@ package ru.gaket.themoviedb
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import ru.gaket.themoviedb.presentation.movies.view.MovieListFragment
+import ru.gaket.themoviedb.presentation.movies.view.MoviesFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, MovieListFragment.newInstance())
+                    .replace(R.id.container, MoviesFragment.newInstance())
                     .commitNow()
         }
     }
