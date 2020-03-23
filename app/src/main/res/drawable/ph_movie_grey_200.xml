@@ -3,8 +3,11 @@
   <item>
     <!-- drawable/circle_card_icon.xml -->
     <shape android:shape="rectangle">
+      <size
+        android:width="20dp"
+        android:height="40dp" />
       <corners android:radius="16dp" />
-      <solid android:color="#f0f0f0" />
+      <solid android:color="#d0d0d0" />
     </shape>
   </item>
   <item android:drawable="@drawable/ic_cinema_grey_100" />
