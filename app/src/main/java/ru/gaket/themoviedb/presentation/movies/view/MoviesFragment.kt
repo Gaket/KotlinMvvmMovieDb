@@ -1,12 +1,12 @@
 package ru.gaket.themoviedb.presentation.movies.view
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.MovieApp
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
+import ru.gaket.themoviedb.presentation.movies.utils.afterTextChanged
 import ru.gaket.themoviedb.presentation.movies.utils.toPx
 import ru.gaket.themoviedb.presentation.movies.viewmodel.*
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Loading
@@ -40,12 +41,17 @@ class MoviesFragment : Fragment() {
   ): View {
     _binding = MoviesFragmentBinding.inflate(inflater, container, false)
     binding.moviesList.apply {
-      layoutManager = GridLayoutManager(activity, 2)
+      val spanCount =
+          when (getResources().getConfiguration().orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> 4
+            else -> 2
+          }
+      layoutManager = GridLayoutManager(activity, spanCount)
       moviesAdapter = MoviesAdapter {
         viewModel.onMovieAction(it)
       }
       adapter = moviesAdapter
-      addItemDecoration(GridSpacingItemDecoration(2, 19.toPx, true))
+      addItemDecoration(GridSpacingItemDecoration(spanCount, 19.toPx, true))
     }
     return binding.root
   }
@@ -60,7 +66,7 @@ class MoviesFragment : Fragment() {
         viewModel.queryChannel.send("")
       }
     }
-    binding.searchInput.addTextChangedListener {
+    binding.searchInput.afterTextChanged {
       lifecycleScope.launch {
         viewModel.queryChannel.send(it.toString())
       }
