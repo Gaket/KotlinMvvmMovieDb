@@ -1,7 +1,9 @@
 package ru.gaket.themoviedb.model.movies.network
 
 import com.google.gson.annotations.SerializedName
-
+/**
+ * Class of Movies coming from the api
+ */
 data class MovieNetworkModel(
 
         @SerializedName("poster_path")

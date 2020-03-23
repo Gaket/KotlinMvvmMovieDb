@@ -11,7 +11,6 @@ val Int.toDp: Int
 val Int.toPx: Int
     get() = (this * Resources.getSystem().displayMetrics.density).toInt()
 
-
 fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

@@ -9,12 +9,16 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import ru.gaket.themoviedb.model.movies.entities.Movie
 import ru.gaket.themoviedb.model.movies.repositories.MoviesRepository
+import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.Navigator
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Loading
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Ready
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.SearchState
 import java.util.concurrent.CancellationException
 
-class MoviesViewModel(val moviesRepository: MoviesRepository) : ViewModel() {
+class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Navigator) : ViewModel() {
+
+  private lateinit var lastSearch: String
+  private var lastPage: Int = 1
 
     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
@@ -57,17 +61,16 @@ class MoviesViewModel(val moviesRepository: MoviesRepository) : ViewModel() {
     val searchState: LiveData<SearchState>
         get() = _searchState
 
-    fun onMovieAction(it: Movie) {
-        // TODO: navigate to movie page
-    }
-
+  fun onMovieAction(it: Movie) {
+    navigator.navigateTo("https://www.themoviedb.org/movie/${it.id}")
+  }
 
     @Suppress("UNCHECKED_CAST")
-    class Factory(private val repo: MoviesRepository) :
+    class Factory(private val repo: MoviesRepository, private val navigator: Navigator) :
         ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MoviesViewModel(moviesRepository = repo) as T
+            return MoviesViewModel(moviesRepository = repo, navigator = navigator) as T
         }
     }
 }

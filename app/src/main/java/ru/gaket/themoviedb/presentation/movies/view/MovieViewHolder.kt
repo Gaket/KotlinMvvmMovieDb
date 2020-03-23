@@ -36,6 +36,7 @@ class MovieViewHolder(private val binding: ItemMovieBinding) :
         Picasso.get()
                 .load(movie.thumbnail)
                 .placeholder(R.drawable.placeholder_movie_grey_200)
+                .error(R.drawable.placeholder_movie_grey_200)
                 .transform(transformation)
                 .into(binding.movieThumbnail)
     }

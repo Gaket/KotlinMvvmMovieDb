@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.MovieApp
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
+import ru.gaket.themoviedb.presentation.movies.utils.toPx
 import ru.gaket.themoviedb.presentation.movies.viewmodel.*
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Loading
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Ready
@@ -44,7 +45,7 @@ class MoviesFragment : Fragment() {
                 viewModel.onMovieAction(it)
             }
             adapter = moviesAdapter
-            addItemDecoration(GridSpacingItemDecoration(2, 19, true))
+            addItemDecoration(GridSpacingItemDecoration(2, 19.toPx, true))
         }
         return binding.root
     }
@@ -54,8 +55,9 @@ class MoviesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val repo = (activity!!.application as MovieApp).myComponent.moviesRepo
+        val navigator = (activity!!.application as MovieApp).myComponent.navigator
 
-        viewModel = ViewModelProvider(this, MoviesViewModel.Factory(repo)).get(MoviesViewModel::class.java)
+        viewModel = ViewModelProvider(this, MoviesViewModel.Factory(repo, navigator)).get(MoviesViewModel::class.java)
         lifecycleScope.launch {
             viewModel.queryChannel.send("")
         }

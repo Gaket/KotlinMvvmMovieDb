@@ -10,14 +10,20 @@ import ru.gaket.themoviedb.model.movies.entities.Movie
 import ru.gaket.themoviedb.model.movies.network.MovieNetworkModel
 import ru.gaket.themoviedb.model.movies.network.MoviesApi
 
+/**
+ * Repository providing data about [Movie]
+ */
 class MoviesRepository(val moviesApi: MoviesApi) {
 
+    /**
+     * Search [Movie]s for the given [query] string
+     */
     @ExperimentalCoroutinesApi
     @FlowPreview
-    internal suspend fun searchMovies(query: String): List<Movie> {
+    internal suspend fun searchMovies(query: String, page: Int = 1): List<Movie> {
         return withContext(Dispatchers.IO) {
             flowOf(
-                    moviesApi.searchMovie("c058d9a291e7f1dd69f97f1afac69b61", query, 1)
+                    moviesApi.searchMovie("c058d9a291e7f1dd69f97f1afac69b61", query, page)
             )
         }
                 .flowOn(Dispatchers.IO)

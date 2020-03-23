@@ -3,6 +3,9 @@ package ru.gaket.themoviedb.model.movies.network
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+/**
+ * Movies api of themoviedb.org
+ */
 interface MoviesApi {
 
     @GET("search/movie")
