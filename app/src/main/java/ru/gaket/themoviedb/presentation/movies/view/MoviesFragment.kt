@@ -11,13 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.MovieApp
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
 import ru.gaket.themoviedb.presentation.movies.utils.afterTextChanged
-import ru.gaket.themoviedb.presentation.movies.utils.toPx
+import ru.gaket.themoviedb.presentation.movies.utils.hideKeyboard
 import ru.gaket.themoviedb.presentation.movies.viewmodel.*
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Loading
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Ready
@@ -53,6 +55,14 @@ class MoviesFragment : Fragment() {
       }
       adapter = moviesAdapter
       addItemDecoration(GridSpacingItemDecoration(spanCount, resources.getDimension(R.dimen.itemsDist).toInt(), true))
+      addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+          super.onScrollStateChanged(recyclerView, newState)
+          if (newState == SCROLL_STATE_DRAGGING) {
+            recyclerView.hideKeyboard()
+          }
+        }
+      })
     }
     return binding.root
   }
