@@ -20,57 +20,57 @@ class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Nav
   private lateinit var lastSearch: String
   private var lastPage: Int = 1
 
-    val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
+  val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
-    val _searchState = MutableLiveData<SearchState>()
+  val _searchState = MutableLiveData<SearchState>()
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
-    private val _searchResult = queryChannel
-        .asFlow()
-        .debounce(500)
-        .onEach {
-            _searchState.value = Loading
-        }
-        .mapLatest {
-            if (it.isEmpty()) {
-                EmptyQuery
+  @FlowPreview
+  @ExperimentalCoroutinesApi
+  private val _searchResult = queryChannel
+      .asFlow()
+      .debounce(500)
+      .onEach {
+        _searchState.value = Loading
+      }
+      .mapLatest {
+        if (it.isEmpty()) {
+          EmptyQuery
+        } else {
+          try {
+            val result = moviesRepository.searchMovies(it)
+            ValidResult(result)
+          } catch (e: Throwable) {
+            if (e is CancellationException) {
+              throw e
             } else {
-                try {
-                    val result = moviesRepository.searchMovies(it)
-                    ValidResult(result)
-                } catch (e: Throwable) {
-                    if (e is CancellationException) {
-                        throw e
-                    } else {
-                        Log.w(MoviesViewModel::class.java.name, e);
-                        ErrorResult(e)
-                    }
-                }
+              Log.w(MoviesViewModel::class.java.name, e);
+              ErrorResult(e)
             }
+          }
         }
-        .onEach {
-            _searchState.value = Ready
-        }
-        .catch { emit(TerminalError) }
-        .asLiveData(viewModelScope.coroutineContext)
+      }
+      .onEach {
+        _searchState.value = Ready
+      }
+      .catch { emit(TerminalError) }
+      .asLiveData(viewModelScope.coroutineContext)
 
-    val searchResult: LiveData<MoviesResult>
-        get() = _searchResult
+  val searchResult: LiveData<MoviesResult>
+    get() = _searchResult
 
-    val searchState: LiveData<SearchState>
-        get() = _searchState
+  val searchState: LiveData<SearchState>
+    get() = _searchState
 
   fun onMovieAction(it: Movie) {
     navigator.navigateTo("https://www.themoviedb.org/movie/${it.id}")
   }
 
-    @Suppress("UNCHECKED_CAST")
-    class Factory(private val repo: MoviesRepository, private val navigator: Navigator) :
-        ViewModelProvider.NewInstanceFactory() {
+  @Suppress("UNCHECKED_CAST")
+  class Factory(private val repo: MoviesRepository, private val navigator: Navigator) :
+      ViewModelProvider.NewInstanceFactory() {
 
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MoviesViewModel(moviesRepository = repo, navigator = navigator) as T
-        }
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+      return MoviesViewModel(moviesRepository = repo, navigator = navigator) as T
     }
+  }
 }

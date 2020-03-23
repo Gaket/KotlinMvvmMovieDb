@@ -5,5 +5,5 @@ import ru.gaket.themoviedb.di.AppComponent
 
 class MovieApp : Application() {
 
-    val myComponent: AppComponent by lazy { AppComponent(this) }
+  val myComponent: AppComponent by lazy { AppComponent(this) }
 }

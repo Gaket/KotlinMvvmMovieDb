@@ -15,22 +15,22 @@ import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.Navigator
  */
 class AppComponent(appContext: Context) {
 
-    val moviesRepo: MoviesRepository
-    val navigator: Navigator
+  val moviesRepo: MoviesRepository
+  val navigator: Navigator
 
-    init {
-        navigator = Navigator(appContext)
+  init {
+    navigator = Navigator(appContext)
 
-        val api = Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(MoviesApi::class.java)
+    val api = Retrofit.Builder()
+        .baseUrl("https://api.themoviedb.org/3/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(MoviesApi::class.java)
 
-        moviesRepo = MoviesRepository(api)
-    }
+    moviesRepo = MoviesRepository(api)
+  }
 
-    fun getMoviesViewModel(fragment: Fragment): MoviesViewModel {
-        return ViewModelProvider(fragment, MoviesViewModel.Factory(moviesRepo, navigator)).get(MoviesViewModel::class.java)
-    }
+  fun getMoviesViewModel(fragment: Fragment): MoviesViewModel {
+    return ViewModelProvider(fragment, MoviesViewModel.Factory(moviesRepo, navigator)).get(MoviesViewModel::class.java)
+  }
 }
