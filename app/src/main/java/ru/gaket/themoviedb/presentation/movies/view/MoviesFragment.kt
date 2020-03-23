@@ -54,10 +54,7 @@ class MoviesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val repo = (activity!!.application as MovieApp).myComponent.moviesRepo
-        val navigator = (activity!!.application as MovieApp).myComponent.navigator
-
-        viewModel = ViewModelProvider(this, MoviesViewModel.Factory(repo, navigator)).get(MoviesViewModel::class.java)
+        viewModel = (activity!!.application as MovieApp).myComponent.getMoviesViewModel(this)
         lifecycleScope.launch {
             viewModel.queryChannel.send("")
         }
