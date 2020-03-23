@@ -17,7 +17,7 @@ class MovieViewHolder(private val binding: ItemMovieBinding) :
 
   init {
     val dimension = itemView.resources.getDimension(R.dimen.cornerRad)
-    val cornerRadius = dimension.toInt().toPx
+    val cornerRadius = dimension.toInt()
     transformation = RoundedCornersTransformation(cornerRadius, 0)
   }
 

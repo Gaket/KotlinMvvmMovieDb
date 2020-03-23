@@ -42,7 +42,8 @@ class MoviesFragment : Fragment() {
     _binding = MoviesFragmentBinding.inflate(inflater, container, false)
     binding.moviesList.apply {
       val spanCount =
-          when (getResources().getConfiguration().orientation) {
+          // Set span count depending on layout
+          when (resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> 4
             else -> 2
           }
@@ -51,7 +52,7 @@ class MoviesFragment : Fragment() {
         viewModel.onMovieAction(it)
       }
       adapter = moviesAdapter
-      addItemDecoration(GridSpacingItemDecoration(spanCount, 19.toPx, true))
+      addItemDecoration(GridSpacingItemDecoration(spanCount, resources.getDimension(R.dimen.itemsDist).toInt(), true))
     }
     return binding.root
   }
