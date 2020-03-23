@@ -1,6 +1,7 @@
 package ru.gaket.themoviedb.presentation.movies.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,8 +55,10 @@ class MoviesFragment : Fragment() {
     super.onActivityCreated(savedInstanceState)
 
     viewModel = (activity!!.application as MovieApp).myComponent.getMoviesViewModel(this)
-    lifecycleScope.launch {
-      viewModel.queryChannel.send("")
+    if (savedInstanceState == null) {
+      lifecycleScope.launch {
+        viewModel.queryChannel.send("")
+      }
     }
     binding.searchInput.addTextChangedListener {
       lifecycleScope.launch {
@@ -92,6 +95,7 @@ class MoviesFragment : Fragment() {
         binding.moviesPlaceholder.visibility = View.VISIBLE
         binding.moviesList.visibility = View.GONE
         binding.moviesPlaceholder.setText(R.string.search_error)
+        Log.e(MoviesFragment::class.java.name, "Something went wrong.", it.e)
       }
       is EmptyResult -> {
         moviesAdapter.submitList(emptyList())

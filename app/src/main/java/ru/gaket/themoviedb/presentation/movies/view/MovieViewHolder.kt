@@ -35,8 +35,8 @@ class MovieViewHolder(private val binding: ItemMovieBinding) :
     val transformation: Transformation = RoundedCornersTransformation(radius, 0)
     Picasso.get()
         .load(movie.thumbnail)
-        .placeholder(R.drawable.placeholder_movie_grey_200)
-        .error(R.drawable.placeholder_movie_grey_200)
+        .placeholder(R.drawable.ph_movie_grey_200)
+        .error(R.drawable.ph_movie_grey_200)
         .transform(transformation)
         .into(binding.movieThumbnail)
   }

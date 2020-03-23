@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import ru.gaket.themoviedb.databinding.ItemMovieBinding
 import ru.gaket.themoviedb.model.movies.entities.Movie
 
-class MoviesAdapter(val listener: (Movie) -> Unit) :
+class MoviesAdapter(private val listener: (Movie) -> Unit) :
     ListAdapter<Movie, MovieViewHolder>(DIFF_CALLBACK) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {

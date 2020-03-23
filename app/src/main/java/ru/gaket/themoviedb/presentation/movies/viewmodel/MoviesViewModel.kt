@@ -17,12 +17,9 @@ import java.util.concurrent.CancellationException
 
 class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Navigator) : ViewModel() {
 
-  private lateinit var lastSearch: String
-  private var lastPage: Int = 1
-
   val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
-  val _searchState = MutableLiveData<SearchState>()
+  private val _searchState = MutableLiveData<SearchState>()
 
   @FlowPreview
   @ExperimentalCoroutinesApi
@@ -38,12 +35,16 @@ class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Nav
         } else {
           try {
             val result = moviesRepository.searchMovies(it)
-            ValidResult(result)
+            if (result.isEmpty()) {
+              EmptyResult
+            } else {
+              ValidResult(result)
+            }
           } catch (e: Throwable) {
             if (e is CancellationException) {
               throw e
             } else {
-              Log.w(MoviesViewModel::class.java.name, e);
+              Log.w(MoviesViewModel::class.java.name, e)
               ErrorResult(e)
             }
           }
@@ -55,6 +56,8 @@ class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Nav
       .catch { emit(TerminalError) }
       .asLiveData(viewModelScope.coroutineContext)
 
+  @ExperimentalCoroutinesApi
+  @FlowPreview
   val searchResult: LiveData<MoviesResult>
     get() = _searchResult
 

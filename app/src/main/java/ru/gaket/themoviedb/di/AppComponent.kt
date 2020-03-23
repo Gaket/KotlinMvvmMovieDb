@@ -15,8 +15,8 @@ import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.Navigator
  */
 class AppComponent(appContext: Context) {
 
-  val moviesRepo: MoviesRepository
-  val navigator: Navigator
+  private val moviesRepo: MoviesRepository
+  private val navigator: Navigator
 
   init {
     navigator = Navigator(appContext)

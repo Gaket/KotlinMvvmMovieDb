@@ -5,7 +5,7 @@
   android:id="@+id/main"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/colorBackgrounnd"
+  android:background="@color/colorBackground"
   tools:context=".presentation.movies.view.MoviesFragment">
 
   <androidx.recyclerview.widget.RecyclerView
@@ -23,16 +23,11 @@
 
   <EditText
     android:id="@+id/searchInput"
+    style="@style/SearchStyle"
     android:layout_width="0dp"
     android:layout_height="72dp"
     android:layout_marginTop="@dimen/space_normal"
-    android:background="@drawable/bg_search"
-    android:hint="@string/hint_search_query"
-    android:iconifiedByDefault="false"
-    android:paddingStart="@dimen/space_big"
-    android:paddingEnd="@dimen/space_huge"
-    android:textColor="@color/textColorPrimary"
-    android:textColorHint="@color/textColorSecondary"
+    android:importantForAutofill="no"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
@@ -43,6 +38,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="18dp"
     android:layout_marginEnd="@dimen/space_big"
+    android:contentDescription="@string/search_icon"
     android:src="@drawable/ic_search_grey_16"
     app:layout_constraintRight_toRightOf="@id/searchInput"
     app:layout_constraintTop_toTopOf="@id/searchInput" />

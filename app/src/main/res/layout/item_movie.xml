@@ -10,17 +10,9 @@
 
   <TextView
     android:id="@+id/movieName"
+    style="@style/movie_name"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_linear"
-    android:gravity="center"
-    android:paddingHorizontal="@dimen/space_small"
-    android:paddingTop="26dp"
-    android:paddingBottom="8dp"
-    android:textAllCaps="true"
-    android:textColor="@color/colorTitles"
-    android:textSize="15sp"
-    android:textStyle="bold"
     android:translationY="-16dp"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +29,6 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    tools:src="@drawable/placeholder_movie_grey_200" />
+    tools:src="@drawable/ph_movie_grey_200" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
