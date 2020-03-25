@@ -17,6 +17,7 @@ import java.util.concurrent.CancellationException
 
 class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Navigator) : ViewModel() {
 
+  @ExperimentalCoroutinesApi
   val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
   private val _searchState = MutableLiveData<SearchState>()

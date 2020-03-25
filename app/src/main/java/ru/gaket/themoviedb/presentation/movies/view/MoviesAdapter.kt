@@ -16,7 +16,6 @@ class MoviesAdapter(private val listener: (Movie) -> Unit) :
     return MovieViewHolder(binding)
   }
 
-
   override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
     holder.bind(getItem(position), listener)
   }

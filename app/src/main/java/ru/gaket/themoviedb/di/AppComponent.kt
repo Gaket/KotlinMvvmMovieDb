@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.gaket.themoviedb.BuildConfig
 import ru.gaket.themoviedb.model.movies.network.MoviesApi
 import ru.gaket.themoviedb.model.movies.repositories.MoviesRepository
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesViewModel
@@ -22,7 +23,7 @@ class AppComponent(appContext: Context) {
     navigator = Navigator(appContext)
 
     val api = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org/3/")
+        .baseUrl(BuildConfig.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(MoviesApi::class.java)
