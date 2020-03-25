@@ -67,6 +67,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.kotlinExt"
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+    implementation "androidx.cardview:cardview:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.google.code.gson:gson:$versions.gson"

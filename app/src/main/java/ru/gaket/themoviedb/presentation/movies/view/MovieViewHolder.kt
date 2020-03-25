@@ -43,7 +43,6 @@ class MovieViewHolder(private val binding: ItemMovieBinding) :
         .load(movie.thumbnail)
         .placeholder(R.drawable.ph_movie_grey_200)
         .error(R.drawable.ph_movie_grey_200)
-        .transform(transformation)
         .fit()
         .centerCrop()
         .into(binding.movieThumbnail)

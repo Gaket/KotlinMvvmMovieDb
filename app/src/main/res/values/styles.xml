@@ -9,7 +9,6 @@
   </style>
 
   <style name="movie_name">
-    <item name="android:background">@drawable/bg_linear</item>
     <item name="android:gravity">center</item>
     <item name="android:paddingLeft">@dimen/space_small</item>
     <item name="android:paddingRight">@dimen/space_small</item>

@@ -16,19 +16,29 @@
     android:translationY="-20dp"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/movieThumbnail"
+    app:layout_constraintTop_toBottomOf="@id/movieThumbnailCard"
     tools:text="Spider Man: Homerun 2 3 4" />
 
-  <ImageView
-    android:id="@+id/movieThumbnail"
+  <androidx.cardview.widget.CardView
+    android:id="@+id/movieThumbnailCard"
     android:layout_width="0dp"
     android:layout_height="0dp"
-    android:contentDescription="@string/content_cinema_poster"
-    android:scaleType="fitXY"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="8dp"
     app:layout_constraintDimensionRatio="H,2:3"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:src="@drawable/ph_movie_grey_200" />
+    app:layout_constraintTop_toTopOf="parent">
+
+    <ImageView
+      android:id="@+id/movieThumbnail"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:contentDescription="@string/content_cinema_poster"
+      android:scaleType="fitXY"
+
+      tools:src="@drawable/ph_movie_grey_200" />
+  </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
