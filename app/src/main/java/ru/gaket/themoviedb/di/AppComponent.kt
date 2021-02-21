@@ -8,12 +8,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.gaket.themoviedb.BuildConfig
 import ru.gaket.themoviedb.model.movies.network.MoviesApi
 import ru.gaket.themoviedb.model.movies.repositories.MoviesRepository
-import ru.gaket.themoviedb.presentation.movies.viewmodel.RxMoviesViewModelImpl
 import ru.gaket.themoviedb.ru.gaket.themoviedb.core.SchedulerProvider
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.Navigator
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesViewModel
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesViewModelImpl
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.RxMoviesViewModel
+import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.RxMoviesViewModelImpl
 
 /**
  * Class creating dependencies on the App level

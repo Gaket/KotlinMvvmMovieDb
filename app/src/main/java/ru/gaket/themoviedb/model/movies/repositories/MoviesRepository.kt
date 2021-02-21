@@ -2,7 +2,6 @@ package ru.gaket.themoviedb.model.movies.repositories
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import ru.gaket.themoviedb.BuildConfig
@@ -29,7 +28,6 @@ class MoviesRepository(private val moviesApi: MoviesApi) {
         .flatMapMerge { it.movies.asFlow() }
         .map { Movie(it.id, it.title, getPosterUrl(it)) }
         .toList()
-        .onEach { println("PASH,toList: $it ") }
   }
 
   private fun getPosterUrl(it: MovieNetworkModel) =  "${BuildConfig.BASE_IMAGE_URL}${it.posterPath}"
