@@ -1,4 +1,4 @@
-package ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.view
+package ru.gaket.themoviedb.presentation.movies.view
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -8,18 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
-import kotlinx.coroutines.launch
+import com.jakewharton.rxbinding3.widget.textChanges
 import ru.gaket.themoviedb.MovieApp
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
-import ru.gaket.themoviedb.presentation.movies.utils.afterTextChanged
 import ru.gaket.themoviedb.presentation.movies.utils.hideKeyboard
-import ru.gaket.themoviedb.presentation.movies.view.GridSpacingItemDecoration
-import ru.gaket.themoviedb.presentation.movies.view.MoviesAdapter
 import ru.gaket.themoviedb.presentation.movies.viewmodel.EmptyQuery
 import ru.gaket.themoviedb.presentation.movies.viewmodel.EmptyResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.ErrorResult
@@ -27,24 +23,26 @@ import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult
 import ru.gaket.themoviedb.presentation.movies.viewmodel.TerminalError
 import ru.gaket.themoviedb.presentation.movies.viewmodel.ValidResult
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Loading
-import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesViewModel
+import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.RxMoviesViewModel
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Ready
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.SearchState
 
-class MoviesFragment : Fragment() {
+class RxMoviesFragment : Fragment() {
 
     companion object {
 
-        fun newInstance() = MoviesFragment()
+        fun newInstance() = RxMoviesFragment()
     }
 
     private var _binding: MoviesFragmentBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     private lateinit var moviesAdapter: MoviesAdapter
-    private lateinit var viewModel: MoviesViewModel
+
+    private lateinit var viewModel: RxMoviesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,9 +55,7 @@ class MoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity!!.application as MovieApp).myComponent.getMoviesViewModel(this)
+        viewModel = (requireActivity().application as MovieApp).myComponent.getRxMoviesViewModel(this)
 
         binding.moviesList.apply {
             val spanCount =
@@ -86,19 +82,13 @@ class MoviesFragment : Fragment() {
             })
         }
 
-        if (savedInstanceState == null) {
-            lifecycleScope.launch {
-                viewModel.queryChannel.send("")
-            }
-        }
-        binding.searchInput.afterTextChanged {
-            lifecycleScope.launch {
-                viewModel.queryChannel.send(it.toString())
-            }
-        }
+        binding.searchInput.textChanges()
+            .map { text -> text.toString() }
+            .distinctUntilChanged()
+            .subscribe(viewModel.queryInput)
 
-        viewModel.searchResult.observe(viewLifecycleOwner, ::handleMoviesListResult)
-        viewModel.searchState.observe(viewLifecycleOwner, ::handleLoadingState)
+        viewModel.searchResultOutput.observe(viewLifecycleOwner, ::handleMoviesListResult)
+        viewModel.searchStateOutput.observe(viewLifecycleOwner, ::handleLoadingState)
     }
 
     private fun handleLoadingState(state: SearchState) {
@@ -126,7 +116,8 @@ class MoviesFragment : Fragment() {
                 binding.moviesPlaceholder.visibility = View.VISIBLE
                 binding.moviesList.visibility = View.GONE
                 binding.moviesPlaceholder.setText(R.string.search_error)
-                Log.e(MoviesFragment::class.java.name, "Something went wrong.", result.e)
+
+                Log.e(RxMoviesFragment::class.java.name, "Something went wrong.", result.e)
             }
             is EmptyResult -> {
                 moviesAdapter.submitList(emptyList())
@@ -154,6 +145,7 @@ class MoviesFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
         _binding = null
     }
 }
