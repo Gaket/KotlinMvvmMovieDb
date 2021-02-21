@@ -5,3 +5,7 @@ The data is taken from
 https://www.themoviedb.org/
 
 For your convenience, the api keys are included, so the app can be played with right after cloning / forking the repo.
+
+# Android Academy workshop
+
+This branch contains code for Android Academy Fundamentals workshop about RxJava
