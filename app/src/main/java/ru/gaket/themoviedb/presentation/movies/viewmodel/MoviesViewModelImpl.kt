@@ -1,91 +1,76 @@
-package ru.gaket.themoviedb.presentation.movies.viewmodel
+package ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.cast
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.subjects.PublishSubject
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.rx2.rxObservable
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import ru.gaket.themoviedb.model.movies.entities.Movie
 import ru.gaket.themoviedb.model.movies.repositories.MoviesRepository
-import ru.gaket.themoviedb.ru.gaket.themoviedb.core.SchedulerProvider
+import ru.gaket.themoviedb.presentation.movies.viewmodel.EmptyQuery
+import ru.gaket.themoviedb.presentation.movies.viewmodel.EmptyResult
+import ru.gaket.themoviedb.presentation.movies.viewmodel.ErrorResult
+import ru.gaket.themoviedb.presentation.movies.viewmodel.TerminalError
+import ru.gaket.themoviedb.presentation.movies.viewmodel.ValidResult
 import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.Navigator
-import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Loading
-import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesViewModel
-import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Ready
-import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.SearchState
-import java.util.concurrent.TimeUnit.MILLISECONDS
+import java.util.concurrent.CancellationException
 
 private const val DEBOUNCE_DELAY_TIME_MS = 500L
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-internal class MoviesViewModelImpl(
-    schedulerProvider: SchedulerProvider,
-    private val moviesRepository: MoviesRepository,
-    private val navigator: Navigator,
-) : MoviesViewModel() {
+class MoviesViewModelImpl(val moviesRepository: MoviesRepository, val navigator: Navigator) : MoviesViewModel() {
 
-    override val queryInput = PublishSubject.create<String>()
+    override val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 
-    override val searchResultOutput = MutableLiveData<MoviesResult>()
-    override val searchStateOutput = MutableLiveData<SearchState>()
+    override val searchState = MutableLiveData<SearchState>()
 
-    private val subscriptions = CompositeDisposable()
-
-    init {
-        queryInput
-            .debounce(DEBOUNCE_DELAY_TIME_MS, MILLISECONDS, schedulerProvider.time())
-            .doOnEach { searchStateOutput.postValue(Loading) }
-            .switchMap(::searchMoviesByQuery)
-            .observeOn(schedulerProvider.ui())
-            .doOnEach { searchStateOutput.value = Ready }
-            .subscribeBy(onNext = searchResultOutput::setValue, onError = { searchResultOutput.value = TerminalError })
-            .addTo(subscriptions)
-    }
-
-    private fun searchMoviesByQuery(query: String): Observable<MoviesResult> {
-        return if (query.isEmpty()) {
-            Observable.just(EmptyQuery)
-        } else {
-            rxObservable { send(moviesRepository.searchMovies(query)) }
-                .map { result ->
+    override val searchResult = queryChannel
+        .asFlow()
+        .debounce(DEBOUNCE_DELAY_TIME_MS)
+        .onEach { searchState.value = Loading }
+        .mapLatest {
+            if (it.isEmpty()) {
+                EmptyQuery
+            } else {
+                try {
+                    val result = moviesRepository.searchMovies(it)
                     if (result.isEmpty()) {
                         EmptyResult
                     } else {
                         ValidResult(result)
                     }
+                } catch (e: Throwable) {
+                    if (e is CancellationException) {
+                        throw e
+                    } else {
+                        Log.w(MoviesViewModelImpl::class.java.name, e)
+                        ErrorResult(e)
+                    }
                 }
-                .cast<MoviesResult>()
-                .onErrorReturn(::ErrorResult)
+            }
         }
-    }
+        .onEach { searchState.value = Ready }
+        .catch { emit(TerminalError) }
+        .asLiveData(viewModelScope.coroutineContext)
 
     override fun onMovieAction(movie: Movie) {
         navigator.navigateTo("https://www.themoviedb.org/movie/${movie.id}")
     }
 
-    override fun onCleared() {
-        super.onCleared()
-
-        subscriptions.clear()
-    }
-
     @Suppress("UNCHECKED_CAST")
-    class Factory(
-        private val schedulerProvider: SchedulerProvider,
-        private val repo: MoviesRepository,
-        private val navigator: Navigator,
-    ) : ViewModelProvider.NewInstanceFactory() {
+    class Factory(private val repo: MoviesRepository, private val navigator: Navigator) :
+        ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MoviesViewModelImpl(schedulerProvider, repo, navigator) as T
+            return MoviesViewModelImpl(moviesRepository = repo, navigator = navigator) as T
         }
     }
 }

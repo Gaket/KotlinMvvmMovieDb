@@ -2,16 +2,16 @@ package ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.channels.SendChannel
+import io.reactivex.Observer
 import ru.gaket.themoviedb.model.movies.entities.Movie
 import ru.gaket.themoviedb.presentation.movies.viewmodel.MoviesResult
 
-abstract class MoviesViewModel : ViewModel() {
+internal abstract class RxMoviesViewModel : ViewModel() {
 
-    abstract val queryChannel: SendChannel<String>
+    abstract val queryInput: Observer<String>
 
-    abstract val searchResult: LiveData<MoviesResult>
-    abstract val searchState: LiveData<SearchState>
+    abstract val searchResultOutput: LiveData<MoviesResult>
+    abstract val searchStateOutput: LiveData<SearchState>
 
     abstract fun onMovieAction(movie: Movie)
 }
