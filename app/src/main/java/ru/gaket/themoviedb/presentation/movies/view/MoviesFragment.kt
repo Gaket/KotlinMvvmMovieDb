@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -71,7 +70,7 @@ class MoviesFragment : Fragment() {
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
 
-    viewModel = (activity!!.application as MovieApp).myComponent.getMoviesViewModel(this)
+    viewModel = (requireActivity().application as MovieApp).myComponent.getMoviesViewModel(this)
     if (savedInstanceState == null) {
       lifecycleScope.launch {
         viewModel.queryChannel.send("")
@@ -83,8 +82,8 @@ class MoviesFragment : Fragment() {
       }
     }
 
-    viewModel.searchResult.observe(viewLifecycleOwner, Observer { handlemoviesList(it) })
-    viewModel.searchState.observe(viewLifecycleOwner, Observer { handleLoadingState(it) })
+    viewModel.searchResult.observe(viewLifecycleOwner, { handleMoviesList(it) })
+    viewModel.searchState.observe(viewLifecycleOwner, { handleLoadingState(it) })
   }
 
   private fun handleLoadingState(it: SearchState) {
@@ -100,7 +99,7 @@ class MoviesFragment : Fragment() {
     }
   }
 
-  private fun handlemoviesList(it: MoviesResult) {
+  private fun handleMoviesList(it: MoviesResult) {
     when (it) {
       is ValidResult -> {
         binding.moviesPlaceholder.visibility = View.GONE
