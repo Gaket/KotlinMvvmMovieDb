@@ -2,6 +2,10 @@ package ru.gaket.themoviedb.presentation.movies.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -16,6 +20,8 @@ import ru.gaket.themoviedb.ru.gaket.themoviedb.presentation.movies.viewmodel.Sea
 import java.util.concurrent.CancellationException
 
 class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Navigator) : ViewModel() {
+
+  val analytics = Firebase.analytics
 
   @ExperimentalCoroutinesApi
   val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
@@ -35,6 +41,9 @@ class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Nav
           EmptyQuery
         } else {
           try {
+            analytics.logEvent(FirebaseAnalytics.Event.SEARCH) {
+              param(FirebaseAnalytics.Param.SEARCH_TERM, it)
+            }
             val result = moviesRepository.searchMovies(it)
             if (result.isEmpty()) {
               EmptyResult
@@ -66,6 +75,9 @@ class MoviesViewModel(val moviesRepository: MoviesRepository, val navigator: Nav
     get() = _searchState
 
   fun onMovieAction(it: Movie) {
+    analytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+      param(FirebaseAnalytics.Param.ITEM_ID, it.id.toLong())
+    }
     navigator.navigateTo("https://www.themoviedb.org/movie/${it.id}")
   }
 
