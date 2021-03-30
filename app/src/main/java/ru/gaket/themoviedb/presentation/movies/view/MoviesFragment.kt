@@ -37,17 +37,17 @@ class MoviesFragment : Fragment() {
   private lateinit var viewModel: MoviesViewModel
 
   override fun onCreateView(
-      inflater: LayoutInflater, container: ViewGroup?,
-      savedInstanceState: Bundle?
+    inflater: LayoutInflater, container: ViewGroup?,
+    savedInstanceState: Bundle?
   ): View {
     _binding = MoviesFragmentBinding.inflate(inflater, container, false)
     binding.moviesList.apply {
       val spanCount =
-          // Set span count depending on layout
-          when (resources.configuration.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> 4
-            else -> 2
-          }
+        // Set span count depending on layout
+        when (resources.configuration.orientation) {
+          Configuration.ORIENTATION_LANDSCAPE -> 4
+          else -> 2
+        }
       layoutManager = GridLayoutManager(activity, spanCount)
       moviesAdapter = MoviesAdapter {
         viewModel.onMovieAction(it)
@@ -84,6 +84,8 @@ class MoviesFragment : Fragment() {
 
     viewModel.searchResult.observe(viewLifecycleOwner, { handleMoviesList(it) })
     viewModel.searchState.observe(viewLifecycleOwner, { handleLoadingState(it) })
+    viewModel.hintText.observe(viewLifecycleOwner, { binding.moviesPlaceholder.text = it })
+    viewModel.maintenanceUpdates.observe(viewLifecycleOwner, { Log.d("Mode", "Mode updated!") })
   }
 
   private fun handleLoadingState(it: SearchState) {
@@ -129,9 +131,9 @@ class MoviesFragment : Fragment() {
         // Something wen't terribly wrong!
         println("Our Flow terminated unexpectedly, so we're bailing!")
         Toast.makeText(
-            activity,
-            getString(R.string.error_unknown_on_download),
-            Toast.LENGTH_SHORT
+          activity,
+          getString(R.string.error_unknown_on_download),
+          Toast.LENGTH_SHORT
         ).show()
       }
     }
