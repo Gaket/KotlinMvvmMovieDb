@@ -1,4 +1,4 @@
-# KotlinMvvmMovieDb
+# Android Academy Advanced 2021 Architecture of small projects
 A test app written in Kotlin using MVVM pattern for Presentation layer, some Google Architecture Components classes and Flow.
 
 The data is taken from
