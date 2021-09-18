@@ -1,12 +1,12 @@
 package ru.gaket.themoviedb.data.movies
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import ru.gaket.themoviedb.di.BaseImageUrlQualifier
 import ru.gaket.themoviedb.data.movies.db.MovieEntity
 import ru.gaket.themoviedb.data.movies.network.MoviesApi
+import timber.log.Timber
 import javax.inject.Inject
 
 interface MoviesRepository {
@@ -28,7 +28,7 @@ class MoviesRepositoryImpl @Inject constructor(
 	override suspend fun searchMovies(query: String, page: Int): List<MovieEntity> {
 		return flowOf(moviesApi.searchMovie(query, page))
 			.flowOn(Dispatchers.IO)
-			.onEach { Log.d(MoviesRepositoryImpl::class.java.name, it.movies.toString()) }
+			.onEach { Timber.d(it.movies.toString()) }
 			.flatMapMerge { searchResponse -> searchResponse.movies.asFlow() }
 			.map { movieDto -> movieDto.toEntity(baseImageUrl) }
 			.toList()

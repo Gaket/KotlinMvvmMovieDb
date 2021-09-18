@@ -31,14 +31,15 @@ class ApiWrapperModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-class BuildConfigWrapperModule {
+class BaseUrlWrapperModule {
+
 	@Provides
 	@BaseUrlQualifier
 	fun provideBaseUrl() = BuildConfig.BASE_URL
 	
 	@Provides
 	@BaseImageUrlQualifier
-	fun provideBaseImageUrl() = BuildConfig.BASE_IMAGE_URL
+	fun provideBaseImageUrl() = "https://image.tmdb.org/t/p/w300"
 	
 	@Provides
 	@BrowseMovieBaseUrlQualifier
