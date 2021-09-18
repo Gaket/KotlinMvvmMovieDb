@@ -8,40 +8,44 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
 import ru.gaket.themoviedb.presentation.movies.utils.afterTextChanged
 import ru.gaket.themoviedb.presentation.movies.utils.hideKeyboard
 import ru.gaket.themoviedb.presentation.movies.viewmodel.*
-import ru.gaket.themoviedb.ru.gaket.themoviedb.core.application.MovieApp
 
+@AndroidEntryPoint
 class MoviesFragment : Fragment() {
 	
-	private var _binding: MoviesFragmentBinding? = null
-	// This property is only valid between onCreateView and onDestroyView.
-	private val binding get() = _binding!!
+	private val viewModel: MoviesViewModel by viewModels()
+	
+	lateinit var binding: MoviesFragmentBinding
 	
 	private lateinit var moviesAdapter: MoviesAdapter
-	
-	private lateinit var viewModel: MoviesViewModel
 	
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
-		_binding = MoviesFragmentBinding.inflate(inflater, container, false)
+		binding = MoviesFragmentBinding.inflate(inflater, container, false)
+		return binding.root
+	}
+	
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		
 		binding.moviesList.apply {
-			val spanCount =
-				// Set span count depending on layout
-				when (resources.configuration.orientation) {
-					Configuration.ORIENTATION_LANDSCAPE -> 4
-					else -> 2
-				}
+			val spanCount = when (resources.configuration.orientation) {
+				Configuration.ORIENTATION_LANDSCAPE -> 4
+				else -> 2
+			}
 			layoutManager = GridLayoutManager(activity, spanCount)
 			moviesAdapter = MoviesAdapter {
 				viewModel.onMovieAction(it)
@@ -63,13 +67,7 @@ class MoviesFragment : Fragment() {
 				}
 			})
 		}
-		return binding.root
-	}
-	
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-		super.onActivityCreated(savedInstanceState)
 		
-		viewModel = (requireActivity().application as MovieApp).myComponent.getMoviesViewModel(this)
 		if (savedInstanceState == null) {
 			lifecycleScope.launch {
 				viewModel.queryChannel.send("")
@@ -83,11 +81,10 @@ class MoviesFragment : Fragment() {
 		
 		viewModel.searchResult.observe(viewLifecycleOwner, { handleMoviesList(it) })
 		viewModel.searchState.observe(viewLifecycleOwner, { handleLoadingState(it) })
-	}
-	
-	override fun onDestroyView() {
-		_binding = null
-		super.onDestroyView()
+		viewModel.argsTestValue.observe(
+			viewLifecycleOwner,
+			{ Toast.makeText(context, "save args:$it", Toast.LENGTH_SHORT).show() }
+		)
 	}
 	
 	private fun handleLoadingState(it: SearchState) {
@@ -130,7 +127,7 @@ class MoviesFragment : Fragment() {
 				binding.moviesPlaceholder.setText(R.string.movies_placeholder)
 			}
 			is TerminalError -> {
-				// Something wen't terribly wrong!
+				// Something went terribly wrong!
 				println("Our Flow terminated unexpectedly, so we're bailing!")
 				Toast.makeText(
 					activity,
@@ -142,6 +139,8 @@ class MoviesFragment : Fragment() {
 	}
 	
 	companion object {
-		fun newInstance() = MoviesFragment()
+		fun newInstance(value: Int) = MoviesFragment().apply {
+			arguments = Bundle().apply { putInt("ARG_TEST_VALUE", value) }
+		}
 	}
 }

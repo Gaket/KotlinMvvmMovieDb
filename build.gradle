@@ -1,5 +1,8 @@
 buildscript {
-    ext.kotlin_version = '1.5.30'
+    ext {
+        hilt_version = '2.38.1'
+        kotlin_version = '1.5.30'
+    }
 
     repositories {
         google()
@@ -7,8 +10,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath "com.android.tools.build:gradle:4.2.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
     }
 }
 

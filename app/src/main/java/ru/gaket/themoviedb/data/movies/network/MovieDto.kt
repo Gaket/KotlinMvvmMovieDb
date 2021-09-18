@@ -1,11 +1,11 @@
-package ru.gaket.themoviedb.model.movies.network
+package ru.gaket.themoviedb.data.movies.network
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * Class of Movies coming from the api
  */
-data class MovieNetworkModel(
+data class MovieDto(
 	@SerializedName("poster_path")
 	val posterPath: String?,
 	

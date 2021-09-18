@@ -2,28 +2,35 @@ package ru.gaket.themoviedb.presentation.movies.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import ru.gaket.themoviedb.core.navigation.WebNavigator
-import ru.gaket.themoviedb.model.movies.entities.Movie
-import ru.gaket.themoviedb.model.movies.repositories.MoviesRepository
+import ru.gaket.themoviedb.data.movies.MoviesRepository
+import ru.gaket.themoviedb.data.movies.db.MovieEntity
 import java.util.concurrent.CancellationException
+import javax.inject.Inject
 
-class MoviesViewModel(val moviesRepository: MoviesRepository, val webNavigator: WebNavigator) :
-	ViewModel() {
+@HiltViewModel
+class MoviesViewModel @Inject constructor(
+	private val moviesRepository: MoviesRepository,
+	private val webNavigator: WebNavigator,
+	private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 	
-	@ObsoleteCoroutinesApi
-	val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
+	private var _argsTestValue = MutableLiveData<Int>()
+	val argsTestValue: LiveData<Int>
+		get() = _argsTestValue
 	
 	private val _searchState = MutableLiveData<SearchState>()
+	val searchState: LiveData<SearchState>
+		get() = _searchState
+	
+	val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
 	
 	@FlowPreview
-	@ObsoleteCoroutinesApi
-	@ExperimentalCoroutinesApi
 	private val _searchResult = queryChannel
 		.asFlow()
 		.debounce(500)
@@ -57,25 +64,15 @@ class MoviesViewModel(val moviesRepository: MoviesRepository, val webNavigator: 
 		.catch { emit(TerminalError) }
 		.asLiveData(viewModelScope.coroutineContext)
 	
-	@ExperimentalCoroutinesApi
-	@ObsoleteCoroutinesApi
 	@FlowPreview
 	val searchResult: LiveData<MoviesResult>
 		get() = _searchResult
 	
-	val searchState: LiveData<SearchState>
-		get() = _searchState
-	
-	fun onMovieAction(it: Movie) {
-		webNavigator.navigateTo("https://www.themoviedb.org/movie/${it.id}")
+	init {
+		_argsTestValue.value = savedStateHandle.get<Int>("ARG_TEST_VALUE") ?: -1
 	}
 	
-	@Suppress("UNCHECKED_CAST")
-	class Factory(private val repo: MoviesRepository, private val webNavigator: WebNavigator) :
-		ViewModelProvider.NewInstanceFactory() {
-		
-		override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-			return MoviesViewModel(moviesRepository = repo, webNavigator = webNavigator) as T
-		}
+	fun onMovieAction(it: MovieEntity) {
+		webNavigator.navigateTo("https://www.themoviedb.org/movie/${it.id}")
 	}
 }

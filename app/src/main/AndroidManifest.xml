@@ -4,10 +4,11 @@
     package="ru.gaket.themoviedb" >
 
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
   <application
     android:theme="@style/AppTheme"
-    android:name=".ru.gaket.themoviedb.core.application.MovieApp"
+    android:name=".core.application.MovieApp"
     android:allowBackup="true"
     android:supportsRtl="true"
     android:label="@string/app_name"

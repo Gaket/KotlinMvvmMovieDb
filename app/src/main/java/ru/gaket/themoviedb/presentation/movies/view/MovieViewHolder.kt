@@ -6,7 +6,7 @@ import com.squareup.picasso.Transformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.ItemMovieBinding
-import ru.gaket.themoviedb.model.movies.entities.Movie
+import ru.gaket.themoviedb.data.movies.db.MovieEntity
 
 class MovieViewHolder(
     private val binding: ItemMovieBinding
@@ -20,26 +20,26 @@ class MovieViewHolder(
 		transformation = RoundedCornersTransformation(cornerRadius, 0)
 	}
 	
-	fun bind(movie: Movie, listener: (Movie) -> Unit) {
-		setName(movie)
-		setThumbnail(movie)
-		setClickListener(listener, movie)
+	fun bind(movieEntity: MovieEntity, onMovieClick: (MovieEntity) -> Unit) {
+		setName(movieEntity)
+		setThumbnail(movieEntity)
+		setClickListener(onMovieClick, movieEntity)
 	}
 	
 	private fun setClickListener(
-		listener: (Movie) -> Unit,
-		movie: Movie
+		onMovieClick: (MovieEntity) -> Unit,
+		movieEntity: MovieEntity
 	) {
-		itemView.setOnClickListener { listener(movie) }
+		itemView.setOnClickListener { onMovieClick(movieEntity) }
 	}
 	
-	private fun setName(movie: Movie) {
-		binding.movieName.text = movie.name
+	private fun setName(movieEntity: MovieEntity) {
+		binding.movieName.text = movieEntity.name
 	}
 	
-	private fun setThumbnail(movie: Movie) {
+	private fun setThumbnail(movieEntity: MovieEntity) {
 		Picasso.get()
-			.load(movie.thumbnail)
+			.load(movieEntity.thumbnail)
 			.placeholder(R.drawable.ph_movie_grey_200)
 			.error(R.drawable.ph_movie_grey_200)
 			.transform(transformation)

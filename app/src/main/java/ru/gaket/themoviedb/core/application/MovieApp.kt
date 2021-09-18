@@ -1,8 +1,7 @@
-package ru.gaket.themoviedb.ru.gaket.themoviedb.core.application
+package ru.gaket.themoviedb.core.application
 
 import android.app.Application
-import ru.gaket.themoviedb.di.AppComponent
+import dagger.hilt.android.HiltAndroidApp
 
-class MovieApp : Application() {
-	val myComponent: AppComponent by lazy { AppComponent(this) }
-}
+@HiltAndroidApp
+class MovieApp : Application()
