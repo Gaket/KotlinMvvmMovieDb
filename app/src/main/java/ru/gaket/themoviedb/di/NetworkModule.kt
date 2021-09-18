@@ -39,6 +39,10 @@ class BuildConfigWrapperModule {
 	@Provides
 	@BaseImageUrlQualifier
 	fun provideBaseImageUrl() = BuildConfig.BASE_IMAGE_URL
+	
+	@Provides
+	@BrowseMovieBaseUrlQualifier
+	fun provideBrowseMovieBaseUrl() = "https://www.themoviedb.org/movie/"
 }
 
 @Qualifier
@@ -48,3 +52,7 @@ annotation class BaseUrlQualifier
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class BaseImageUrlQualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class BrowseMovieBaseUrlQualifier

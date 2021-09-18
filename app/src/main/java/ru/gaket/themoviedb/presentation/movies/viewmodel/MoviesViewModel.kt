@@ -1,6 +1,5 @@
 package ru.gaket.themoviedb.presentation.movies.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.*
 import ru.gaket.themoviedb.core.navigation.WebNavigator
 import ru.gaket.themoviedb.data.movies.MoviesRepository
 import ru.gaket.themoviedb.data.movies.db.MovieEntity
+import timber.log.Timber
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
@@ -52,7 +52,7 @@ class MoviesViewModel @Inject constructor(
 					if (e is CancellationException) {
 						throw e
 					} else {
-						Log.w(MoviesViewModel::class.java.name, e)
+						Timber.w(e)
 						ErrorResult(e)
 					}
 				}
@@ -73,6 +73,6 @@ class MoviesViewModel @Inject constructor(
 	}
 	
 	fun onMovieAction(it: MovieEntity) {
-		webNavigator.navigateTo("https://www.themoviedb.org/movie/${it.id}")
+		webNavigator.navigateTo(it.id)
 	}
 }

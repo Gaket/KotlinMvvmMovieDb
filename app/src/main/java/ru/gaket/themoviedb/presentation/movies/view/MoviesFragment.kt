@@ -2,7 +2,6 @@ package ru.gaket.themoviedb.presentation.movies.view
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.gaket.themoviedb.R
 import ru.gaket.themoviedb.databinding.MoviesFragmentBinding
-import ru.gaket.themoviedb.presentation.movies.utils.afterTextChanged
-import ru.gaket.themoviedb.presentation.movies.utils.hideKeyboard
 import ru.gaket.themoviedb.presentation.movies.viewmodel.*
+import ru.gaket.themoviedb.util.afterTextChanged
+import ru.gaket.themoviedb.util.hideKeyboard
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment() {
@@ -83,7 +83,7 @@ class MoviesFragment : Fragment() {
 		viewModel.searchState.observe(viewLifecycleOwner, { handleLoadingState(it) })
 		viewModel.argsTestValue.observe(
 			viewLifecycleOwner,
-			{ Toast.makeText(context, "save args:$it", Toast.LENGTH_SHORT).show() }
+			{ Toast.makeText(context, "Example save args:$it", Toast.LENGTH_SHORT).show() }
 		)
 	}
 	
@@ -112,7 +112,7 @@ class MoviesFragment : Fragment() {
 				binding.moviesPlaceholder.visibility = View.VISIBLE
 				binding.moviesList.visibility = View.GONE
 				binding.moviesPlaceholder.setText(R.string.search_error)
-				Log.e(MoviesFragment::class.java.name, "Something went wrong.", it.e)
+				Timber.e("Something went wrong.", it.e)
 			}
 			is EmptyResult -> {
 				moviesAdapter.submitList(emptyList())

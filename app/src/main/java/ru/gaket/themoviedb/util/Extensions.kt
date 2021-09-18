@@ -1,4 +1,4 @@
-package ru.gaket.themoviedb.presentation.movies.utils
+package ru.gaket.themoviedb.util
 
 import android.content.Context
 import android.content.res.Resources

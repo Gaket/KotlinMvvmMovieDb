@@ -5,17 +5,19 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import dagger.hilt.android.qualifiers.ApplicationContext
+import ru.gaket.themoviedb.di.BrowseMovieBaseUrlQualifier
 import javax.inject.Inject
 
 interface WebNavigator {
-	fun navigateTo(url: String): Boolean
+	fun navigateTo(movieId: Int): Boolean
 }
 
 /**
  * Class responsible for the navigation
  */
 class WebNavigatorImpl @Inject constructor(
-	@ApplicationContext private val context: Context
+	@ApplicationContext private val context: Context,
+	@BrowseMovieBaseUrlQualifier private val browseMovieUrl: String
 ) : WebNavigator {
 
 	/**
@@ -23,8 +25,11 @@ class WebNavigatorImpl @Inject constructor(
 	 *
 	 * @return [true] if navigation succeded, [false] otherwise
 	 */
-	override fun navigateTo(url: String): Boolean {
-		val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+	override fun navigateTo(movieId: Int): Boolean {
+		val browserIntent = Intent(
+			Intent.ACTION_VIEW,
+			Uri.parse("${browseMovieUrl}${movieId}")
+		)
 		browserIntent.flags = browserIntent.flags or Intent.FLAG_ACTIVITY_NEW_TASK
 		return try {
 			context.startActivity(browserIntent)
