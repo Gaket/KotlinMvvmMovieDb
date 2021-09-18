@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -11,7 +10,7 @@ android {
         minSdk 21
         targetSdk 30
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -49,21 +48,22 @@ ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.kotlinExt"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.kotlinExt"
+    implementation 'androidx.core:core-ktx:1.6.0'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$versions.kotlinExt"
-    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.kotlinExt"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.kotlinExt"
     implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit"
     implementation "com.google.code.gson:gson:$versions.gson"
     implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
